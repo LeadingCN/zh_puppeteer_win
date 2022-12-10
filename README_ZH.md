@@ -1,0 +1,97 @@
+# Electron-Vue-template
+
+> 这是一个基于 electron 的 vue 最基本的模板，其中前端技术栈则用到 vue 全家桶，axios 作为 http 请求。现在合并了花裤衩的 vue-admin 中的东西侧栏样式是在`src/renderer/layout/components/sidebar`文件夹中,大家可以根据需求进行个性化更改.
+
+- 我简单的封装了 axios．以及 electron 常用的信息弹窗，错误弹窗，具体文档地址：[中文在线文档](https://umbrella22.github.io/electron-vue-template-doc/)，[国内访问地址](https://zh-sky.gitee.io/electron-vue-template-doc/)。
+
+> **请注意，在 2021 年 4 月 13 日的更新之后，将使用 esbuild 替换 babel，如对 babel 有强需求的小伙伴请勿更新。**
+
+- vite 版本 [electron-vite-template](https://github.com/umbrella22/electron-vite-template)
+
+- [electron-vite-template（码云）](https://gitee.com/Zh-Sky/electron-vite-template)
+
+- react 版 [Electron-react-template](https://github.com/umbrella22/electron-react-template)
+
+<div align="center" >
+  <span>测试打包状态：</span>
+  <a href="https://github.com/umbrella22/electron-vue-template">
+    <img src="https://github.com/umbrella22/electron-vue-template/actions/workflows/build-test.yml/badge.svg">
+  </a>
+</div>
+
+> ### **请确保您的 node 环境是大于或等于 16**
+
+#### 如何安装
+
+```bash
+npm config edit
+# 该命令会打开npm的配置文件，请在空白处添加，此操作是配置淘宝镜像。
+# registry=https://registry.npmmirror.com
+# electron_mirror=https://cdn.npmmirror.com/binaries/electron/
+# electron_builder_binaries_mirror=https://npmmirror.com/mirrors/electron-builder-binaries/
+# 然后关闭该窗口，重启命令行.
+# 使用yarn安装
+yarn or yarn install
+
+# 启动之后，会在9080端口监听
+yarn dev
+
+# build命令在不同系统环境中，需要的的不一样，需要自己根据自身环境进行配置
+yarn build
+
+```
+
+---
+
+## 启动逻辑图
+
+<img src="启动逻辑图.jpg">
+
+# [更新日志](CHANGELOG.md)
+
+热更新使用
+
+修改./config/index.js
+
+```javascript
+module.exports = {
+  build: {
+    env: require("./prod.env"),
+    DisableF12: true,
+    cleanConsole: true,
+    openDevTools: false,
+    hotPublishUrl: "http://127.0.0.1:3000", //服务器地址
+    hotPublishConfigName: "device/winversion", //热更新接口
+  },
+  dev: {
+    env: require("./dev.env"),
+    removeElectronJunk: true,
+    chineseLog: false,
+    port: 9080,
+  },
+  development: require("./dev.env"),
+  production: require("./prod.env"),
+  UseStartupChart: true,
+  IsUseSysTitle: true,
+  DllFolder: "",
+  BuiltInServerPort: 25565,
+  UseJsx: true,
+};
+```
+
+修改 package.json
+
+```json
+ "name": "winbotim", //应用名
+ "version": "0.0.1", //应用版本
+```
+
+修改服务器 set 表中的对应的版本
+
+![image-20221130121411467](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20221130121411467.png)
+
+触发的是 hot-update 前端在启动时就要触发并且
+
+# 登录
+
+src/main/server/cloud.js 修改登录

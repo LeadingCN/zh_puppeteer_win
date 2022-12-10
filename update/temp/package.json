@@ -1,0 +1,23 @@
+{
+  "name": "winbotim",
+  "version": "0.0.2",
+  "author": "sky <https://github.com/umbrella22>",
+  "description": "An electron-vue project",
+  "license": "MIT",
+  "main": "./dist/electron/main.js",
+  "dependencies": {
+    "axios": "^1.1.2",
+    "cross-env": "7.0.3",
+    "dayjs": "^1.11.6",
+    "electron-updater": "^5.3.0",
+    "express": "4.17.3",
+    "fs-extra": "^10.1.0",
+    "jwchat": "^1.0.11",
+    "md5": "^2.3.0",
+    "request": "^2.88.2",
+    "request-promise-native": "^1.0.9",
+    "socket.io-client": "^4.5.4",
+    "uuid": "^9.0.0",
+    "websocket": "^1.0.34"
+  }
+}
