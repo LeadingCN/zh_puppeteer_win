@@ -19,12 +19,28 @@
       </el-button>
     </div>
     <div style="width:auto;margin-left: 20px;">
+      <el-input style="width: 300px;" v-model="zhpath" placeholder="账号路径">
+      </el-input>
+      <el-button size="small" @click="savezhPath()">
+        保存账号路径
+      </el-button>
+    </div>
+    <div style="width:auto;margin-left: 20px;">
+      <el-input style="width: 300px;" v-model="ADSL.user" placeholder="宽带账号">
+      </el-input>
+      <el-input style="width: 300px;" v-model="ADSL.pwd" placeholder="宽带密码">
+      </el-input>
+      <el-button size="small" @click="saveADSL()">
+        保存宽带信息
+      </el-button>
+    </div>
+    <!-- <div style="width:auto;margin-left: 20px;">
       <el-input style="width: 300px;" v-model="secret" placeholder="CDKEY">
       </el-input>
       <el-button size="small" @click="savesecret()">
         保存CDKEY
       </el-button>
-    </div>
+    </div> -->
     <el-dialog title="进度" :visible.sync="dialogVisible" :before-close="handleClose" center width="14%" top="45vh">
       <div class="conten">
         <el-progress type="dashboard" :percentage="percentage" :color="colors" :status="progressStaus"></el-progress>
@@ -47,6 +63,8 @@ export default {
     apppath: "",
     updatestatus: "",
     scriptpath: "",
+    zhpath: "",
+    ADSL: { user: "", pwd: "" },
     newdata: {
       name: "yyy",
       age: "12",
@@ -81,16 +99,23 @@ export default {
     if (r && r.path) {
       this.userPath = r.path;
     }
-    let rkey = await ipcRenderer.invoke("config", { action: 'getsecret' });
-    console.log('rkey', rkey);
-    let spath = await ipcRenderer.invoke("config", { action: 'getscriptpath' });
-    if (spath.scriptpath) {
-      this.scriptpath = spath.scriptpath;
+    // let rkey = await ipcRenderer.invoke("config", { action: 'getsecret' });
+    // console.log('rkey', rkey);
+    let defaulconfig = await ipcRenderer.invoke("config", { action: 'getconfig' });
+    console.log(defaulconfig);
+    if (defaulconfig.scriptpath) {
+      this.scriptpath = defaulconfig.scriptpath;
     }
-    console.log('rkey', rkey);
-    if (rkey && rkey.secret) {
-      this.secret = rkey.secret;
+    if (defaulconfig.zhpath) {
+      this.zhpath = defaulconfig.zhpath;
     }
+    if (defaulconfig.ADSL) {
+      this.ADSL = defaulconfig.ADSL;
+    }
+    // console.log('rkey', rkey);
+    // if (rkey && rkey.secret) {
+    //   this.secret = rkey.secret;
+    // }
     console.log("环境打印示例");
     console.log(__lib);
     console.log(process.env.TERGET_ENV);
@@ -305,6 +330,22 @@ export default {
     },
     async savescriptPath() {
       let r = await ipcRenderer.invoke("config", { action: 'savescriptpath', scriptpath: this.scriptpath });
+      if (r) {
+        this.$message.success('保存成功')
+      } else {
+        this.$message.error('保存失败')
+      }
+    },
+    async savezhPath() {
+      let r = await ipcRenderer.invoke("config", { action: 'savezhpath', zhpath: this.zhpath });
+      if (r) {
+        this.$message.success('保存成功')
+      } else {
+        this.$message.error('保存失败')
+      }
+    },
+    async saveADSL() {
+      let r = await ipcRenderer.invoke("config", { action: 'saveADSL', ADSL: this.ADSL });
       if (r) {
         this.$message.success('保存成功')
       } else {

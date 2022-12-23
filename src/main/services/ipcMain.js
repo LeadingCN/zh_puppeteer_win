@@ -12,7 +12,7 @@ import { getMainWindow } from './windowManager'
 import path, { join } from 'path'
 import * as fs from 'fs'
 import { accessSync } from 'fs-extra'
-const apihost = 'http://bt.leading.ren:3000'
+const apihost = 'http://z.yyeth.top'
 const md5 = require('md5')
 const request = require('request-promise-native')
 var userListPath = path.join('C:/', 'userList')//用户登录凭证文件夹
@@ -54,9 +54,15 @@ export default {
       return result
     })
     ipcMain.handle('createLink', async (event, arg) => {
-      return await zhHandler.createLink(arg)
+      zhHandler.createLink(arg)
     })
-
+    ipcMain.handle('getlist', async (event, arg) => {
+      //读取config中的zhpath
+      let config = JSON.parse(fs.readFileSync(path.join(userListPath, 'config.json')).toString())
+      let zhpath = config.zhpath
+      //文件读取
+      return await zhHandler.getList(zhpath)
+    })
     ipcMain.handle('userPath', async (event, arg) => {
       console.log('获取用户路径', arg);
       //if (!this.websocket) this.connet();
@@ -83,6 +89,11 @@ export default {
         //不存在则创建
         fs.writeFileSync(path.join(userListPath, 'config.json'), JSON.stringify(_defaultConfig))
       }
+      if (!fs.existsSync(path.join(userListPath, 'iplist.txt'))) {
+        //不存在则创建
+        fs.writeFileSync(path.join(userListPath, 'iplist.txt'), '')
+      }
+
       //读取配置表
       let config = JSON.parse(fs.readFileSync(path.join(userListPath, 'config.json')).toString())
       this.groupKeyword = config.groupKeyword
@@ -167,10 +178,10 @@ export default {
             }
           }
           return { secret: '' }
-        } else if (arg.action == 'getscriptpath') {
+        } else if (arg.action == 'getconfig') {
           let config = JSON.parse(fs.readFileSync(path.join(userListPath, 'config.json')).toString())
-          if (config.scriptpath) {
-            return { scriptpath: config.scriptpath }
+          if (config) {
+            return config
           }
           return { scriptPath: '' }
         } else if (arg.action == 'savescriptpath') {
@@ -178,6 +189,22 @@ export default {
           let config = JSON.parse(fs.readFileSync(path.join(userListPath, 'config.json')).toString())
 
           config.scriptpath = arg.scriptpath
+          //保存
+          fs.writeFileSync(path.join(userListPath, 'config.json'), JSON.stringify(config))
+          return true
+        } else if (arg.action == 'savezhpath') {
+          //读取本来配置
+          let config = JSON.parse(fs.readFileSync(path.join(userListPath, 'config.json')).toString())
+
+          config.zhpath = arg.zhpath
+          //保存
+          fs.writeFileSync(path.join(userListPath, 'config.json'), JSON.stringify(config))
+          return true
+        } else if (arg.action == 'saveADSL') {
+          //读取本来配置
+          let config = JSON.parse(fs.readFileSync(path.join(userListPath, 'config.json')).toString())
+
+          config.ADSL = arg.ADSL
           //保存
           fs.writeFileSync(path.join(userListPath, 'config.json'), JSON.stringify(config))
           return true
